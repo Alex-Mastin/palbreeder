@@ -3,6 +3,7 @@ import '~/styles/globals.css'
 
 import { GeistSans } from 'geist/font/sans'
 import { Providers } from '~/app/context'
+import { AppHeader } from '~/app/components'
 
 export const metadata = {
   title: 'Palbreeder | Palworld Breeding Calculator',
@@ -22,7 +23,10 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className={`${GeistSans.className} w-full bg-background`}>
-        <Providers>{children}</Providers>
+        <Providers>
+          <AppHeader />
+          {children}
+        </Providers>
       </body>
     </html>
   )
