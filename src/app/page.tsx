@@ -91,10 +91,12 @@ export default function HomePage({
             Select the Pal you want to breed to get started
           </p>
         </div>
-        <Combobox
-          id="child-selector"
-          selected={targetPal}
-        />
+        <form>
+          <Combobox
+            id="child-selector"
+            selected={targetPal}
+          />
+        </form>
         <Title />
         <ExceptionAlert />
         {getBreedingCombinations(targetPal).map((combination, index) => (

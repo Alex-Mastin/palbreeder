@@ -25,7 +25,7 @@ import { paldeck } from '~/app/paldeck'
 import { CaretSortIcon } from '@radix-ui/react-icons'
 import './styles.css'
 import { cn } from '~/lib/utils'
-import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 
 interface ComboboxProps {
   id?: string
@@ -34,6 +34,7 @@ interface ComboboxProps {
 }
 
 function Combobox(props: ComboboxProps) {
+  const router = useRouter()
   const [open, setOpen] = React.useState(false)
   const isDesktop = useMediaQuery('(min-width: 768px)')
   const [selected, setSelected] = React.useState<Pal | null>(
@@ -50,7 +51,7 @@ function Combobox(props: ComboboxProps) {
     setSelected(pal)
     setOpen(false)
 
-    // props.onSelect?.(pal)
+    router.push(`/?target=${pal?.name}`)
   }
 
   if (isDesktop) {
@@ -243,18 +244,14 @@ function PalList({ onSelect }: { onSelect: (value: string) => void }) {
         <CommandEmpty>No results found.</CommandEmpty>
         <CommandGroup>
           {paldeck.map((pal) => (
-            <Link
-              href={`/?target=${pal.name}`}
+            <CommandItem
               key={pal.name}
+              value={`${pal.paldeckNumber}||${pal.name}||${pal.type.join('')}`}
+              onSelect={onSelect}
+              className="grid grid-cols-[auto,auto,1fr] items-center gap-2 md:grid-cols-[32px,auto,auto,auto,1fr]"
             >
-              <CommandItem
-                value={`${pal.paldeckNumber}||${pal.name}||${pal.type.join('')}`}
-                onSelect={onSelect}
-                className="grid grid-cols-[auto,auto,1fr] items-center gap-2 md:grid-cols-[32px,auto,auto,auto,1fr]"
-              >
-                <PalListItem {...pal} />
-              </CommandItem>
-            </Link>
+              <PalListItem {...pal} />
+            </CommandItem>
           ))}
         </CommandGroup>
       </CommandList>
