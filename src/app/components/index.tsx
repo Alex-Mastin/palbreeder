@@ -1,3 +1,4 @@
+export * from './Alert'
 export * from './AppHeader'
 export * from './Button'
 export * from './Combobox'

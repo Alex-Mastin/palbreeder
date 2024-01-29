@@ -1,6 +1,6 @@
 import { type Pal } from '~/types'
 
-export const paldeck: Pal[] = [
+const paldeck: Pal[] = [
   {
     paldeckNumber: 1,
     name: 'Lamball',
@@ -824,3 +824,41 @@ export const paldeck: Pal[] = [
     type: ['Dragon']
   }
 ]
+
+const exceptions = new Map([
+  ['Relaxaurus Lux', ['Relaxaurus', 'Sparkit']],
+  ['Incineram Noct', ['Incineram', 'Maraith']],
+  ['Mau Cryst', ['Mau', 'Pengullet']],
+  ['Vanwyrm Cryst', ['Vanwyrm', 'Foxcicle']],
+  ['Eikthyrdeer Terra', ['Eikthyrdeer', 'Hangyu']],
+  ['Elphidran Aqua', ['Ephidran', 'Surfent']],
+  ['Pyrin Noct', ['Pyrin', 'Katress']],
+  ['Mammorest Cryst', ['Mammorest', 'Wumpo']],
+  ['Mossanda Lux', ['Mossanda', 'Grizzbolt']],
+  ['Dinossom Lux', ['Dinossum', 'Rayhound']],
+  ['Jolthog Cryst', ['Jolthog', 'Pengullet']],
+  ['Frostallion Noct', ['Frostallion', 'Helzephyr']],
+  ['Ice Kingpaca', ['Kingpaca', 'Reindrix']],
+  ['Lyleen Noct', ['Lyleen', 'Menasting']],
+  ['Leezpunk Ignis', ['Leezpunk', 'Flambelle']],
+  ['Blazehowl Noct', ['Blazehowl', 'Felbat']],
+  ['Robinquill Terra', ['Robinquill', 'Fuddler']],
+  ['Broncherry Aqua', ['Broncherry', 'Fuack']],
+  ['Surfent Terra', ['Surfent', 'Dumud']],
+  ['Gobfin Ignus', ['Gobfin', 'Rooby']],
+  ['Suzaku Aqua', ['Suzaku', 'Jormuntide']],
+  ['Ice Reptyro', ['Reptyro', 'Foxcicle']],
+  ['Hangyu Cryst', ['Hangyu', 'Swee']],
+  ['Lyleen', ['Mossanda', 'Petallia']],
+  ['Faleris', ['Vanwyrm', 'Anubis']],
+  ['Grizzbolt', ['Mossanda', 'Rayhound']],
+  ['Oserk', ['Grizzbolt', 'Relaxaurus']],
+  ['Shadowbeak', ['Kitsun', 'Astegon']],
+  ['Frostallion', ['Frostallion', 'Frostallion']],
+  ['Jetragon', ['Jetragon', 'Jetragon']],
+  ['Paladius', ['Paladius', 'Paladius']],
+  ['Necromus', ['Necromus', 'Necromus']],
+  ['Jormuntide Ignis', ['Jormuntide Ignis', 'Jormuntide Ignis']]
+])
+
+export { exceptions, paldeck }

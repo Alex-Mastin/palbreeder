@@ -1,15 +1,36 @@
 'use client'
 
-import { AppHeader, Combobox } from '~/app/components'
+import {
+  Alert,
+  AlertDescription,
+  AlertTitle,
+  AppHeader,
+  Combobox
+} from '~/app/components'
 import { type Pal } from '~/types'
 import { useState } from 'react'
-import { paldeck } from '~/app/paldeck'
+import { exceptions, paldeck } from '~/app/paldeck'
 import Image from 'next/image'
+import { InfoCircledIcon } from '@radix-ui/react-icons'
+
+function isException(pal: Pal | null) {
+  if (!pal) return false
+
+  return exceptions.has(pal.name)
+}
 
 function getBreedingCombinations(pal: Pal | null) {
   if (!pal) return []
-  const { breedingPower } = pal
 
+  if (isException(pal)) {
+    return [
+      exceptions
+        .get(pal.name)
+        ?.map((parent) => paldeck.find((pal) => pal.name === parent))
+    ] as Pal[][]
+  }
+
+  const { breedingPower } = pal
   let closestMatches = [] as Pal[][]
   let closestDifference = Infinity
 
@@ -37,6 +58,32 @@ export default function HomePage() {
     setTargetPal(pal)
   }
 
+  function Title() {
+    if (!targetPal) return null
+
+    return (
+      <h2 className="font-bold tracking-tight md:text-xl">
+        Compatible Parents
+      </h2>
+    )
+  }
+
+  function ExceptionAlert() {
+    if (!targetPal || !isException(targetPal)) return null
+
+    return (
+      <Alert>
+        <InfoCircledIcon className="h-4 w-4" />
+        <AlertTitle>Heads up!</AlertTitle>
+        <AlertDescription>
+          <span className="font-medium tracking-tight">{targetPal.name}</span>{' '}
+          is a special Pal that can only be bred with specific parents. The
+          parents listed below are the only possible combinations.
+        </AlertDescription>
+      </Alert>
+    )
+  }
+
   return (
     <main>
       <AppHeader />
@@ -57,11 +104,8 @@ export default function HomePage() {
           id="child-selector"
           onSelect={onSelect}
         />
-        {targetPal && (
-          <h2 className="font-bold tracking-tight md:text-xl">
-            Compatible Parents
-          </h2>
-        )}
+        <Title />
+        <ExceptionAlert />
         {getBreedingCombinations(targetPal).map((combination, index) => (
           <div
             key={index}
@@ -94,34 +138,6 @@ export default function HomePage() {
                   </span>
                 </div>
               </div>
-              // <div
-              //   key={index}
-              //   className="flex items-start gap-4 md:items-center"
-              // >
-              //   <Image
-              //     className="h-8 w-8 rounded-full border lg:h-12 lg:w-12"
-              //     src={`/${pal.name}.webp`}
-              //     alt={pal.name}
-              //     width={50}
-              //     height={50}
-              //   />
-              //   <div>
-              //     <div className="flex items-center gap-0.5 text-sm">
-              //       <span className="font-medium">{pal.name}</span>
-              //       <span className="font-regular text-muted-foreground">
-              //         #{pal.paldeckNumber}
-              //       </span>
-              //     </div>
-              //     <div className="grid">
-              //       <span className="text-xs text-muted-foreground">
-              //         Breeding power
-              //       </span>
-              //       <span className="text-lg font-medium tracking-tighter">
-              //         {pal.breedingPower}
-              //       </span>
-              //     </div>
-              //   </div>
-              // </div>
             ))}
           </div>
         ))}

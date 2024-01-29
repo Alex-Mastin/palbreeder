@@ -32,7 +32,7 @@ function AppHeader() {
             variant="outline"
             size="icon"
           >
-            <GitHubLogoIcon fontSize={20} />
+            <GitHubLogoIcon />
           </Button>
         </a>
         <Button
@@ -41,14 +41,8 @@ function AppHeader() {
           title="Toggle theme"
           onClick={toggleTheme}
         >
-          <SunIcon
-            className="hidden dark:block"
-            fontSize={20}
-          />
-          <MoonIcon
-            className="dark:hidden"
-            fontSize={20}
-          />
+          <SunIcon className="hidden dark:block" />
+          <MoonIcon className="dark:hidden" />
         </Button>
       </div>
     </header>
