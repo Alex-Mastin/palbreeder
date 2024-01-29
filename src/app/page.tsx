@@ -1,17 +1,8 @@
-'use client'
-
-import {
-  Alert,
-  AlertDescription,
-  AlertTitle,
-  AppHeader,
-  Combobox
-} from '~/app/components'
 import { type Pal } from '~/types'
-import { useState } from 'react'
 import { exceptions, paldeck } from '~/app/paldeck'
-import Image from 'next/image'
+import { Alert, AlertDescription, AlertTitle, Combobox } from '~/app/components'
 import { InfoCircledIcon } from '@radix-ui/react-icons'
+import Image from 'next/image'
 
 function isException(pal: Pal | null) {
   if (!pal) return false
@@ -51,12 +42,13 @@ function getBreedingCombinations(pal: Pal | null) {
   return closestMatches
 }
 
-export default function HomePage() {
-  const [targetPal, setTargetPal] = useState<Pal | null>(null)
-
-  function onSelect(pal: Pal | null) {
-    setTargetPal(pal)
-  }
+export default function HomePage({
+  searchParams
+}: {
+  searchParams?: Record<string, string | string[] | undefined>
+}) {
+  const targetPal =
+    paldeck.find((pal) => pal.name === searchParams?.target) ?? null
 
   function Title() {
     if (!targetPal) return null
@@ -86,7 +78,6 @@ export default function HomePage() {
 
   return (
     <main>
-      <AppHeader />
       <div className="mx-auto flex h-full w-full flex-col gap-3 px-6 pb-3 lg:w-[50%] lg:gap-6 lg:px-0 lg:pb-6">
         <div className="flex flex-col items-center pb-3 pt-6 lg:gap-1.5">
           <h1 className="leading-tighter text-2xl font-bold tracking-tighter [text-wrap:balance] sm:text-4xl md:text-5xl lg:text-6xl/none">
@@ -102,7 +93,7 @@ export default function HomePage() {
         </div>
         <Combobox
           id="child-selector"
-          onSelect={onSelect}
+          selected={targetPal}
         />
         <Title />
         <ExceptionAlert />
@@ -122,6 +113,7 @@ export default function HomePage() {
                   alt={pal.name}
                   width={50}
                   height={50}
+                  title={pal.name}
                 />
                 <div className="flex gap-1 text-sm">
                   <span className="font-medium tracking-tight">{pal.name}</span>

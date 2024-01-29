@@ -31,6 +31,7 @@ function AppHeader() {
           <Button
             variant="outline"
             size="icon"
+            title="View source on GitHub"
           >
             <GitHubLogoIcon />
           </Button>

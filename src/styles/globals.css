@@ -1,1 +1,5 @@
 @import 'tailwind.css';
+
+img {
+    transition: 0.3s;
+}

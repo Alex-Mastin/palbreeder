@@ -16,7 +16,8 @@ import {
   DrawerTrigger,
   Popover,
   PopoverContent,
-  PopoverTrigger
+  PopoverTrigger,
+  SkeletonImage
 } from '~/app/components'
 import { type Pal } from '~/types'
 import Image from 'next/image'
@@ -24,17 +25,20 @@ import { paldeck } from '~/app/paldeck'
 import { CaretSortIcon } from '@radix-ui/react-icons'
 import './styles.css'
 import { cn } from '~/lib/utils'
+import Link from 'next/link'
 
 interface ComboboxProps {
   id?: string
-  onSelect?: (pal: Pal | null) => void
   className?: string
+  selected?: Pal | null
 }
 
 function Combobox(props: ComboboxProps) {
   const [open, setOpen] = React.useState(false)
   const isDesktop = useMediaQuery('(min-width: 768px)')
-  const [selected, setSelected] = React.useState<Pal | null>(null)
+  const [selected, setSelected] = React.useState<Pal | null>(
+    props.selected ?? null
+  )
   const label = 'Search...'
 
   function onSelect(value: string) {
@@ -46,7 +50,7 @@ function Combobox(props: ComboboxProps) {
     setSelected(pal)
     setOpen(false)
 
-    props.onSelect?.(pal)
+    // props.onSelect?.(pal)
   }
 
   if (isDesktop) {
@@ -70,6 +74,7 @@ function Combobox(props: ComboboxProps) {
                     width={24}
                     height={24}
                     title={selected.name}
+                    priority={true}
                   />
                   {selected.name}
                   <div
@@ -83,6 +88,7 @@ function Combobox(props: ComboboxProps) {
                         alt={type}
                         width={16}
                         height={16}
+                        priority={true}
                       />
                     ))}
                   </div>
@@ -133,6 +139,7 @@ function Combobox(props: ComboboxProps) {
                   width={24}
                   height={24}
                   title={selected.name}
+                  priority={true}
                 />
                 {selected.name}
                 <div
@@ -146,6 +153,7 @@ function Combobox(props: ComboboxProps) {
                       alt={type}
                       width={16}
                       height={16}
+                      priority={true}
                     />
                   ))}
                 </div>
@@ -186,13 +194,15 @@ function PalListItem(pal: Pal) {
         #{pal.paldeckNumber}
       </span>
       {isDesktop && (
-        <Image
+        <SkeletonImage
           className="rounded-full"
           src={`/${pal.name}.webp`}
           alt={pal.name}
           width={24}
           height={24}
           title={pal.name}
+          priority={pal.paldeckNumber <= 10}
+          quality={25}
         />
       )}
       <span className="font-medium">{pal.name}</span>
@@ -209,6 +219,8 @@ function PalListItem(pal: Pal) {
               alt={type}
               width={16}
               height={16}
+              priority={true}
+              quality={50}
             />
           ))}
         </div>
@@ -231,14 +243,18 @@ function PalList({ onSelect }: { onSelect: (value: string) => void }) {
         <CommandEmpty>No results found.</CommandEmpty>
         <CommandGroup>
           {paldeck.map((pal) => (
-            <CommandItem
+            <Link
+              href={`/?target=${pal.name}`}
               key={pal.name}
-              value={`${pal.paldeckNumber}||${pal.name}||${pal.type.join('')}`}
-              onSelect={onSelect}
-              className="grid grid-cols-[auto,auto,1fr] items-center gap-2 md:grid-cols-[32px,auto,auto,auto,1fr]"
             >
-              <PalListItem {...pal} />
-            </CommandItem>
+              <CommandItem
+                value={`${pal.paldeckNumber}||${pal.name}||${pal.type.join('')}`}
+                onSelect={onSelect}
+                className="grid grid-cols-[auto,auto,1fr] items-center gap-2 md:grid-cols-[32px,auto,auto,auto,1fr]"
+              >
+                <PalListItem {...pal} />
+              </CommandItem>
+            </Link>
           ))}
         </CommandGroup>
       </CommandList>
