@@ -25,16 +25,18 @@ function getBreedingCombinations(pal: Pal | null) {
   let closestMatches = [] as Pal[][]
   let closestDifference = Infinity
 
-  paldeck.forEach((parentA) => {
-    paldeck.forEach((parentB) => {
-      const average = (parentA.breedingPower + parentB.breedingPower) / 2
+  paldeck.forEach((parentA, indexA) => {
+    paldeck.forEach((parentB, indexB) => {
+      if (indexA <= indexB) {
+        const average = (parentA.breedingPower + parentB.breedingPower) / 2
 
-      const difference = Math.abs(breedingPower - average)
-      if (difference < closestDifference) {
-        closestDifference = difference
-        closestMatches = [[parentA, parentB]]
-      } else if (difference === closestDifference) {
-        closestMatches.push([parentA, parentB])
+        const difference = Math.abs(breedingPower - average)
+        if (difference < closestDifference) {
+          closestDifference = difference
+          closestMatches = [[parentA, parentB]]
+        } else if (difference === closestDifference) {
+          closestMatches.push([parentA, parentB])
+        }
       }
     })
   })
