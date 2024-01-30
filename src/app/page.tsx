@@ -4,11 +4,17 @@ import {
   AlertDescription,
   AlertTitle,
   BreedingCombinations,
-  Combobox,
-  CompatibleParentSortButton
+  Button,
+  Combobox
 } from '~/app/components'
-import { InfoCircledIcon } from '@radix-ui/react-icons'
+import {
+  CaretDownIcon,
+  CaretSortIcon,
+  CaretUpIcon,
+  InfoCircledIcon
+} from '@radix-ui/react-icons'
 import { isBreedingException } from '~/util'
+import { sort } from '~/app/actions'
 
 export default function HomePage({
   searchParams
@@ -17,7 +23,10 @@ export default function HomePage({
 }) {
   const targetPal =
     paldeck.find((pal) => pal.name === searchParams?.target) ?? null
-  const sortDirection = searchParams?.sort as 'asc' | 'desc' | null
+  const sortDirection =
+    searchParams?.sort === 'asc' || searchParams?.sort === 'desc'
+      ? searchParams.sort
+      : null
 
   function Title() {
     if (!targetPal) return null
@@ -27,7 +36,25 @@ export default function HomePage({
         <h2 className="font-bold tracking-tight md:text-xl">
           Compatible Parents
         </h2>
-        <CompatibleParentSortButton />
+        <form action={sort}>
+          <input
+            type="hidden"
+            name="searchParams"
+            value={JSON.stringify(searchParams)}
+          />
+          <Button
+            variant="ghost"
+            size="icon"
+            title="Sort direction"
+            type="submit"
+          >
+            {sortDirection === 'desc' && <CaretDownIcon />}
+            {sortDirection === 'asc' && <CaretUpIcon />}
+            {sortDirection !== 'asc' && sortDirection !== 'desc' && (
+              <CaretSortIcon />
+            )}
+          </Button>
+        </form>
       </div>
     )
   }
