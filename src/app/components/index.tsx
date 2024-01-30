@@ -1,6 +1,7 @@
 export * from './Alert'
 export * from './AppHeader'
 export * from './Button'
+export * from './BreedingCombinations'
 export * from './Combobox'
 export * from './Command'
 export * from './Dialog'

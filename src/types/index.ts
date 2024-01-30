@@ -16,4 +16,6 @@ type Pal = {
   type: PalType[]
 }
 
-export type { Pal }
+type SortDirection = 'asc' | 'desc' | null
+
+export type { Pal, SortDirection }
