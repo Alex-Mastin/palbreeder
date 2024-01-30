@@ -1,48 +1,14 @@
-import { type Pal } from '~/types'
-import { exceptions, paldeck } from '~/app/paldeck'
-import { Alert, AlertDescription, AlertTitle, Combobox } from '~/app/components'
+import { paldeck } from '~/app/paldeck'
+import {
+  Alert,
+  AlertDescription,
+  AlertTitle,
+  BreedingCombinations,
+  Combobox,
+  CompatibleParentSortButton
+} from '~/app/components'
 import { InfoCircledIcon } from '@radix-ui/react-icons'
-import Image from 'next/image'
-
-function isException(pal: Pal | null) {
-  if (!pal) return false
-
-  return exceptions.has(pal.name)
-}
-
-function getBreedingCombinations(pal: Pal | null) {
-  if (!pal) return []
-
-  if (isException(pal)) {
-    return [
-      exceptions
-        .get(pal.name)
-        ?.map((parent) => paldeck.find((pal) => pal.name === parent))
-    ] as Pal[][]
-  }
-
-  const { breedingPower } = pal
-  let closestMatches = [] as Pal[][]
-  let closestDifference = Infinity
-
-  paldeck.forEach((parentA, indexA) => {
-    paldeck.forEach((parentB, indexB) => {
-      if (indexA <= indexB) {
-        const average = (parentA.breedingPower + parentB.breedingPower) / 2
-
-        const difference = Math.abs(breedingPower - average)
-        if (difference < closestDifference) {
-          closestDifference = difference
-          closestMatches = [[parentA, parentB]]
-        } else if (difference === closestDifference) {
-          closestMatches.push([parentA, parentB])
-        }
-      }
-    })
-  })
-
-  return closestMatches
-}
+import { isBreedingException } from '~/util'
 
 export default function HomePage({
   searchParams
@@ -51,19 +17,23 @@ export default function HomePage({
 }) {
   const targetPal =
     paldeck.find((pal) => pal.name === searchParams?.target) ?? null
+  const sortDirection = searchParams?.sort as 'asc' | 'desc' | null
 
   function Title() {
     if (!targetPal) return null
 
     return (
-      <h2 className="font-bold tracking-tight md:text-xl">
-        Compatible Parents
-      </h2>
+      <div className="flex items-center gap-1">
+        <h2 className="font-bold tracking-tight md:text-xl">
+          Compatible Parents
+        </h2>
+        <CompatibleParentSortButton />
+      </div>
     )
   }
 
   function ExceptionAlert() {
-    if (!targetPal || !isException(targetPal)) return null
+    if (!targetPal || !isBreedingException(targetPal)) return null
 
     return (
       <Alert>
@@ -72,7 +42,7 @@ export default function HomePage({
         <AlertDescription>
           <span className="font-medium tracking-tight">{targetPal.name}</span>{' '}
           is a special Pal that can only be bred with specific parents. The
-          parents listed below are the only possible combinations.
+          parents listed below are the only possible combination(s).
         </AlertDescription>
       </Alert>
     )
@@ -101,42 +71,10 @@ export default function HomePage({
         </form>
         <Title />
         <ExceptionAlert />
-        {getBreedingCombinations(targetPal).map((combination, index) => (
-          <div
-            key={index}
-            className="grid grid-cols-[1fr,1fr] rounded-md border px-6 py-3 shadow-sm"
-          >
-            {combination.map((pal, index) => (
-              <div
-                key={index}
-                className="flex flex-col items-center"
-              >
-                <Image
-                  className="h-8 w-8 rounded-full border lg:h-12 lg:w-12"
-                  src={`/${pal.name}.webp`}
-                  alt={pal.name}
-                  width={50}
-                  height={50}
-                  title={pal.name}
-                />
-                <div className="flex gap-1 text-sm">
-                  <span className="font-medium tracking-tight">{pal.name}</span>
-                  <span className="font-regular tabular-nums text-muted-foreground">
-                    #{pal.paldeckNumber}
-                  </span>
-                </div>
-                <div className="mt-3 flex flex-col items-center text-sm">
-                  <span className="text-xl font-medium tabular-nums leading-tight tracking-tighter">
-                    {pal.breedingPower}
-                  </span>
-                  <span className="text-xs font-medium text-muted-foreground">
-                    Breeding power
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
-        ))}
+        <BreedingCombinations
+          targetPal={targetPal}
+          sortDirection={sortDirection}
+        />
       </div>
     </main>
   )
